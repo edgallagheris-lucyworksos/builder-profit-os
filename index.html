@@ -1,98 +1,23 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Builder Profit OS</title>
 
-<style>
-body{
-font-family:Arial;
-background:#0b0f14;
-color:white;
-padding:20px;
-}
-
-button{
-padding:12px;
-margin:5px;
-font-size:16px;
-background:#22c55e;
-border:none;
-border-radius:6px;
-}
-
-input{
-padding:8px;
-margin:5px;
-width:100%;
-}
-
-.card{
-background:#111827;
-padding:15px;
-border-radius:8px;
-margin-top:10px;
-}
-</style>
+<link rel="stylesheet" href="css/style.css">
 
 </head>
 
 <body>
 
-<h2>Builder Profit OS</h2>
+<div id="app"></div>
 
-<div class="card">
-
-<h3>Create Job</h3>
-
-<input id="client" placeholder="Client name">
-
-<input id="job" placeholder="Job description">
-
-<button onclick="saveJob()">Save Job</button>
-
-</div>
-
-<div class="card">
-
-<h3>Jobs</h3>
-
-<div id="jobs"></div>
-
-</div>
-
-<script>
-
-let jobs = JSON.parse(localStorage.getItem("jobs")||"[]")
-
-function render(){
-
-let html=""
-
-jobs.forEach(j=>{
-html += "<p>"+j.client+" — "+j.job+"</p>"
-})
-
-document.getElementById("jobs").innerHTML = html
-
-}
-
-function saveJob(){
-
-let client = document.getElementById("client").value
-let job = document.getElementById("job").value
-
-jobs.push({client,job})
-
-localStorage.setItem("jobs",JSON.stringify(jobs))
-
-render()
-
-}
-
-render()
-
-</script>
+<script src="data.js"></script>
+<script src="utils.js"></script>
+<script src="main.js"></script>
 
 </body>
 </html>
