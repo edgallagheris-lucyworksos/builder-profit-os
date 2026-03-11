@@ -5,16 +5,13 @@ function initApp() {
   renderDashboard();
 }
 
-/* ---------- DASHBOARD ---------- */
-
 function renderDashboard() {
   const container = document.getElementById("app");
-
   if (!container) return;
 
   const totalJobs = jobs.length;
-
-  const totalValue = jobs.reduce((t, j) => t + (j.value || 0), 0);
+  const totalValue = totalContractValue();
+  const totalProfit = totalProfitEstimate();
 
   container.innerHTML = `
     <h2>Builder Profit OS</h2>
@@ -30,7 +27,12 @@ function renderDashboard() {
     </div>
 
     <div class="card">
-      <button onclick="showAddJob()">Add Job</button>
+      <h3>Estimated Profit</h3>
+      <p>${formatCurrency(totalProfit)}</p>
+    </div>
+
+    <div class="card">
+      <button class="primary" onclick="showAddJob()">Add Job</button>
     </div>
 
     <div id="jobList"></div>
@@ -39,67 +41,38 @@ function renderDashboard() {
   renderJobs();
 }
 
-/* ---------- ADD JOB ---------- */
-
 function showAddJob() {
   const container = document.getElementById("app");
+  if (!container) return;
 
   container.innerHTML = `
     <h2>New Job</h2>
 
-    <input id="jobName" placeholder="Job name">
-    <input id="jobValue" placeholder="Contract value" type="number">
+    <div class="card">
+      <label>Job name</label>
+      <input id="jobName" placeholder="Job name">
 
-    <button onclick="addJob()">Save Job</button>
-    <button onclick="renderDashboard()">Cancel</button>
+      <label>Contract value (£)</label>
+      <input id="jobValue" placeholder="Contract value" type="number">
+
+      <button class="primary" onclick="addJob()">Save Job</button>
+      <button class="secondary" onclick="renderDashboard()">Cancel</button>
+    </div>
   `;
 }
 
 function addJob() {
   const name = document.getElementById("jobName").value.trim();
-  const value = parseFloat(document.getElementById("jobValue").value);
+  const value = parseFloat(document.getElementById("jobValue").value) || 0;
 
   if (!name) {
     alert("Enter job name");
     return;
   }
 
-  jobs.push({
-    id: nextJobId++,
-    name,
-    value,
-    createdAt: new Date().toISOString()
-  });
-
-  saveToStorage();
+  createJob(name, value);
   renderDashboard();
 }
-
-/* ---------- JOB LIST ---------- */
 
 function renderJobs() {
-  const container = document.getElementById("jobList");
-
-  if (!container) return;
-
-  container.innerHTML = jobs
-    .map(
-      (job, i) => `
-    <div class="job-row">
-      <span>${escapeHtml(job.name)}</span>
-      <span>${formatCurrency(job.value)}</span>
-      <button onclick="deleteJob(${i})">Delete</button>
-    </div>
-  `
-    )
-    .join("");
-}
-
-function deleteJob(index) {
-  if (!confirm("Delete job?")) return;
-
-  jobs.splice(index, 1);
-
-  saveToStorage();
-  renderDashboard();
-}
+  const container = document.getElementById("job
